@@ -39,7 +39,7 @@ static int cmd_q(char *args) {
 static int cmd_help(char *args);
 static int cmd_si(char *args);
 static int cmd_info(char *args);
-
+static int cmd_x(char *args);
 
 static struct {
 	char *name;
@@ -50,12 +50,29 @@ static struct {
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
 	{ "si","Single instruction", cmd_si},
-	{ "info","information",cmd_info},
+	{ "info","Information",cmd_info},
+	{ "x","Scan memory",cmd_x},
 	/* TODO: Add more commands */
 
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
+static int cmd_x(char *args){
+	int n;
+	int i;
+	swaddr_t addr;
+	char *num = strtok(NULL," ");
+	sscanf(num,"%d",&n);
+	args = num + strlen(num) + 1;
+	//char *address = strtok(NULL," ");
+	sscanf(args,"%x",&addr);
+	for(i=1;i<=n;i++){
+		printf("0x%08x: ",addr);
+		printf("0x%08x\n",swaddr_read(addr,4));
+		addr += 4;
+	}
+	return 0;
+}
 static int cmd_info(char *args){
 	char *arg = strtok(NULL," ");
 	int i;
