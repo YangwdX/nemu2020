@@ -63,9 +63,9 @@ static int cmd_x(char *args){
 	swaddr_t addr;
 	char *num = strtok(NULL," ");
 	sscanf(num,"%d",&n);
-	args = num + strlen(num) + 1;
-	//char *address = strtok(NULL," ");
-	sscanf(args,"%x",&addr);
+	//args = num + strlen(num) + 1;
+	char *address = strtok(NULL," ");
+	sscanf(address,"%x",&addr);
 	for(i=1;i<=n;i++){
 		printf("0x%08x: ",addr);
 		printf("0x%08x\n",swaddr_read(addr,4));
