@@ -53,11 +53,10 @@ static struct {
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
 static int cmd_si(char *args){
-	int n;
-	if(args == NULL){
-		assert(0);
+	int n=1;
+	if(args != NULL){
+		sscanf(args,"%d",&n);
 	}
-	sscanf(args,"%d",&n);
 	cpu_exec(n);
 	return 0;
 }
