@@ -40,7 +40,7 @@ static int cmd_help(char *args);
 static int cmd_si(char *args);
 static int cmd_info(char *args);
 static int cmd_x(char *args);
-
+static int cmd_p(char *args); 
 static struct {
 	char *name;
 	char *description;
@@ -52,11 +52,22 @@ static struct {
 	{ "si","Single instruction", cmd_si},
 	{ "info","Information",cmd_info},
 	{ "x","Scan memory",cmd_x},
+	{ "p", "Expression evaluation",cmd_p},
 	/* TODO: Add more commands */
-
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
+
+static int cmd_p(char *args){
+	uint32_t num;
+	bool success;
+	num = expr(args, &success);
+	if(success) 
+		printf("0x%x:\t%d\n",num,num);
+	else
+		assert(0);
+	return 0;
+}
 static int cmd_x(char *args){
 	int n;
 	int i;

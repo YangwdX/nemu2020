@@ -16,6 +16,7 @@ enum {
 static struct rule {
 	char *regex;
 	int token_type;
+	//int priority;
 } rules[] = {
 
 	/* TODO: Add more rules.
@@ -64,6 +65,7 @@ void init_regex() {
 
 typedef struct token {
 	int type;
+	//int priority;
 	char str[32];
 } Token;
 
@@ -93,7 +95,20 @@ static bool make_token(char *e) {
 				 */
 
 				switch(rules[i].token_type) {
-					default: panic("please implement me");
+					case NOTYPE: break;
+					case REGISTER:
+						tokens[nr_token].type = rules[i].token_type;
+						//tokens[nr_token].priority = rules[i].priority;
+						strncpy(tokens[nr_token].str,substr_start+1,substr_len-1);
+						tokens[nr_token].str[substr_len-1] = '\0';
+						nr_token++;
+						break;							
+					default: 
+						tokens[nr_token].type = rules[i].token_type;
+						//tokens[nr_token].priority = rules[i].priority;
+						strncpy(tokens[nr_token].str,substr_start,substr_len);
+						tokens[nr_token].str[substr_len] = '\0';
+						nr_token++;
 				}
 
 				break;
