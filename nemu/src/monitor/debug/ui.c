@@ -41,6 +41,8 @@ static int cmd_si(char *args);
 static int cmd_info(char *args);
 static int cmd_x(char *args);
 static int cmd_p(char *args); 
+static int cmd_w(char *args);
+static int cmd_d(char *args);
 static struct {
 	char *name;
 	char *description;
@@ -53,11 +55,28 @@ static struct {
 	{ "info","Information",cmd_info},
 	{ "x","Scan memory",cmd_x},
 	{ "p", "Expression evaluation",cmd_p},
+	{ "w", "Watchpoints", cmd_w},
+	{ "d", "Delete watchpoints",cmd_d},
 	/* TODO: Add more commands */
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
-
+static int cmd_d(char *args){
+	int num;
+	sscanf(args,"%d",&num);
+	delete_wp(num);
+	return 0;
+}
+static int cmd_w(char *args){
+	WP *f;
+	bool success;
+	f = new_wp();
+	f->val = expr(args,&success);
+	if(!success) Assert(1,"Wrong\n");
+	strcpy(f->expr,args);
+	printf("Watchpoint%d: %s\nValue is %d\n",f->NO,f->expr,f->val);
+	return 0;
+}
 static int cmd_p(char *args){
 	uint32_t num;
 	bool success;
@@ -95,6 +114,9 @@ static int cmd_info(char *args){
 			printf("%s\t0x%08x\n",regsl[i],reg_l(i));
 		}
 		printf("eip\t0x%08x\n",cpu.eip);
+	}else if(arg[0]=='w'){
+			info_wp();
+		
 	}else{
 		assert(0);
 	}
