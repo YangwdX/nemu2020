@@ -96,8 +96,8 @@ static int cmd_x(char *args){
 	sscanf(num,"%d",&n);
 	//args = num + strlen(num) + 1;
 	char *address = strtok(NULL," ");
-	//sscanf(address,"%x",&addr);
-	addr = expr(address,&success);
+	sscanf(address,"%x",&addr);
+	//addr = expr(address,&success);
 	if(!success) assert(1); 
 	for(i=1;i<=n;i++){
 		printf("0x%08x: ",addr);
