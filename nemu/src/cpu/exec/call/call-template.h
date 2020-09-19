@@ -6,7 +6,7 @@
 	reg_l(R_ESP) -= DATA_BYTE;
 	swaddr_write(reg_l(R_ESP), 4 , cpu.eip + DATA_BYTE);   	//push(eip)
 	DATA_TYPE_S displacement = op_src->val;			//read operand address
-	print_asm_template1(); //("call %x",cpu.eip + 1 + displacement + displacement);
+	print_asm_template1(); //("call %x",cpu.eip + 1 + len + displacement);
 	cpu.eip += displacement;				//eip += relative address	
 }
 
