@@ -2,15 +2,12 @@
 
 #define instr call
 
-static void do_execute(){
-	//push(eip)
-	//read operand address
-	//eip += relative address
+static void do_execute(){	
 	reg_l(R_ESP) -= DATA_BYTE;
-	swaddr_write(reg_l(R_ESP), 4 , cpu.eip + DATA_BYTE);
-	DATA_TYPE_S displacement = op_src->val;
-	print_asm("call %x",cpu.eip + 1 + displacement + displacement);
-	cpu.eip += displacement;
+	swaddr_write(reg_l(R_ESP), 4 , cpu.eip + DATA_BYTE);   	//push(eip)
+	DATA_TYPE_S displacement = op_src->val;			//read operand address
+	print_asm_template1();/*("call %x",cpu.eip + 1 + displacement + displacement);*/
+	cpu.eip += displacement;				//eip += relative address	
 }
 
 make_instr_helper(i);
