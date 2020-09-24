@@ -3,6 +3,8 @@
 #include "con-trans/call.h"
 #include "con-trans/je.h"
 #include "con-trans/ret.h"
+#include "con-trans/jmp.h"
+#include "con-trans/jbe.h"
 
 #include "data-mov/mov.h"
 #include "data-mov/xchg.h"
@@ -20,6 +22,7 @@
 #include "arith/idiv.h"
 #include "arith/div.h"
 #include "arith/cmp.h"
+#include "arith/sub.h"
 
 #include "logic/and.h"
 #include "logic/or.h"
