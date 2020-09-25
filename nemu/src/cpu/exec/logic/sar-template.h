@@ -9,7 +9,6 @@ static void do_execute () {
 	uint8_t count = src & 0x1f;
 	dest >>= count;
 	result = dest;
-	
 	int len = (DATA_BYTE << 3) - 1;
 	cpu.CF=0;
 	cpu.OF=0;
