@@ -7,7 +7,7 @@ bool getbit(void *buf, int offset){
 	int byte = offset >> 3;
 	offset &= 7;
 	uint8_t mask = 1 << offset;
-	return (((uint8_t *)buf)[byte] & mask) == 0;
+	return (((uint8_t *)buf)[byte] & mask) != 0;
 }
 
 void setbit(void *buf, int offset, bool bit){
