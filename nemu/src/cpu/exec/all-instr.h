@@ -8,6 +8,7 @@
 #include "con-trans/jne.h"
 #include "con-trans/jle.h"
 #include "con-trans/jg.h"
+#include "con-trans/jl.h"
 
 #include "data-mov/mov.h"
 #include "data-mov/xchg.h"
