@@ -6,6 +6,7 @@
 #include "con-trans/jmp.h"
 #include "con-trans/jbe.h"
 #include "con-trans/jne.h"
+#include "con-trans/jle.h"
 
 #include "data-mov/mov.h"
 #include "data-mov/xchg.h"
