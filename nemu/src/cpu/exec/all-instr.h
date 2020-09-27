@@ -43,6 +43,7 @@
 #include "logic/sete.h"
 
 #include "string/rep.h"
+#include "string/lods.h"
 
 #include "misc/misc.h"
 
