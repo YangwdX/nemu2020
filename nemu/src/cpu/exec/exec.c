@@ -40,7 +40,7 @@ make_group(group2_i_b,
 /* 0xc1 */
 make_group(group2_i_v,
 	inv, inv, inv, inv, 
-	shl_rm_imm_v, inv, inv, sar_rm_imm_v)
+	shl_rm_imm_v, shr_rm_imm_v, inv, sar_rm_imm_v)
 
 /* 0xd0 */
 make_group(group2_1_b,
@@ -112,8 +112,8 @@ helper_fun opcode_table [256] = {
 /* 0x3c */	cmp_i2a_b, inv, inv, inv,
 /* 0x40 */	inv, inv, inv, inv,
 /* 0x44 */	inv, inv, inv, inv,
-/* 0x48 */	inv, inv, inv, inv,
-/* 0x4c */	inv, inv, inv, dec_r_v,
+/* 0x48 */	dec_r_v,dec_r_v , dec_r_v, dec_r_v,
+/* 0x4c */	dec_r_v,dec_r_v , dec_r_v, dec_r_v,
 /* 0x50 */	push_r_v, push_r_v, push_r_v, push_r_v,
 /* 0x54 */	push_r_v, push_r_v, push_r_v, push_r_v,
 /* 0x58 */	pop_r_v, pop_r_v, pop_r_v, pop_r_v,
