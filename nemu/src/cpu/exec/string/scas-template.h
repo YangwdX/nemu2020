@@ -5,7 +5,7 @@
 make_helper(concat(scas_,SUFFIX)){
 	swaddr_t s1 = REG(R_EAX),s2 = swaddr_read(reg_l(R_EDI),DATA_BYTE);
 	uint32_t res = s1 - s2;
-	if(cpu.DF==0) 
+	if(cpu.DF == 0) 
 		reg_l(R_EDI) += DATA_BYTE;
 	else
 		reg_l(R_EDI) -= DATA_BYTE;
