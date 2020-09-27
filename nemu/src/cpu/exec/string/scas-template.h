@@ -13,8 +13,8 @@ make_helper(concat(scas_,SUFFIX)){
 	int len = (DATA_BYTE << 3) - 1;
 	cpu.CF = s1 < s2;
 	cpu.OF = ((s1>>len) != (s2 >> len) && (s2 >> len) == cpu.SF);
-	//print_asm("lods%s",SUFFIX);
-	print_asm_template1();
+	print_asm("lods%s",str(SUFFIX));
+	//print_asm_template1();
 	return 1;	
 }
 
