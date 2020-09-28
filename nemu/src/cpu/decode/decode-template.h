@@ -7,6 +7,7 @@
 #define decode_i concat(decode_i_, SUFFIX)
 #define decode_a concat(decode_a_, SUFFIX)
 #define decode_r2rm concat(decode_r2rm_, SUFFIX)
+#define decode_n comcat(decode_n,SUFFIX)
 
 make_helper(concat(updateCPU_,SUFFIX)) {
 	int len = (DATA_BYTE << 3) - 1;
@@ -16,6 +17,10 @@ make_helper(concat(updateCPU_,SUFFIX)) {
 	eip ^= eip >> 2;
 	eip ^= eip >> 1;
 	cpu.PF = !(eip & 1);
+	return 0;
+}
+make_helper(concat(decode_n_,SUFFIX)) {
+	op_src->type = OP_TYPE_NO;
 	return 0;
 }
 /* Ib, Iv */
