@@ -12,7 +12,6 @@ static void do_execute () {
 	s2=0;
     	cpu.OF=(s1 != s2 && s2 == cpu.SF) ;
 	cpu.ZF=!result;
-
 	OPERAND_W(op_src, result);
 	result ^= result >>4;
 	result ^= result >>2;
@@ -20,7 +19,6 @@ static void do_execute () {
 	cpu.PF=!(result & 1);
 	/* TODO: Update EFLAGS. */
 	//panic("please implement me");
-
 	print_asm_template1();
 }
 
