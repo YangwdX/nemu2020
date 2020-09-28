@@ -10,6 +10,7 @@
 #include "con-trans/jg.h"
 #include "con-trans/jl.h"
 #include "con-trans/js.h"
+#include "con-trans/jns.h"
 
 #include "data-mov/mov.h"
 #include "data-mov/xchg.h"
