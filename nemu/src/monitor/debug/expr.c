@@ -29,6 +29,7 @@ static struct rule {
 	{"0x[0-9a-fA-F]{1,8}", NUM},			// hex
 	{"[0-9]{1,10}", NUM},					// dec
 	{"\\$[a-z]{1,31}", REG},				// register names 
+	{"[a-zA-Z][A-Za-z0-9_]*", MARK},		//mark
 	{"-", '-'},
 	{"\\*", '*'},
 	{"/", '/'},
