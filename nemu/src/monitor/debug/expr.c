@@ -30,7 +30,6 @@ static struct rule {
 	{"[0-9]{1,10}", NUM},					// dec
 	{"\\$[a-z]{1,31}", REG},				// register names 
 	{"[a-zA-Z][A-Za-z0-9_]*", MARK},		//mark
-	//{"\\b[a-zA-Z_0-9]+" , MARK , 0},		// mark
 	{"-", '-'},
 	{"\\*", '*'},
 	{"/", '/'},
@@ -66,10 +65,10 @@ void init_regex() {
 
 typedef struct token {
 	int type;
-	char str[32];
+	char str[64];
 } Token;
 
-Token tokens[32];
+Token tokens[64];
 int nr_token;
 
 static bool make_token(char *e) {
@@ -260,7 +259,7 @@ uint32_t expr(char *e, bool *success) {
 			}
 
 			prev_type = tokens[i - 1].type;
-			if( !(prev_type == ')' || prev_type == NUM || prev_type == REG) ) {
+			if( !(prev_type == ')' || prev_type == NUM || prev_type == REG || prev_type == MARK) ) {
 				tokens[i].type = NEG;
 			}
 		}
@@ -272,7 +271,7 @@ uint32_t expr(char *e, bool *success) {
 			}
 
 			prev_type = tokens[i - 1].type;
-			if( !(prev_type == ')' || prev_type == NUM || prev_type == REG) ) {
+			if( !(prev_type == ')' || prev_type == NUM || prev_type == REG || prev_type == MARK) ) {
 				tokens[i].type = REF;
 			}
 		}
