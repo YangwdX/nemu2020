@@ -11,7 +11,7 @@ enum {
 	NOTYPE = 256, EQ
 
 	/* TODO: Add more token types */
-        , NUM, NEQ, OR, AND, REG, REF, NEG
+        , NUM, NEQ, OR, AND, REG, REF, NEG, MARK
 };
 
 static struct rule {
@@ -139,7 +139,7 @@ static int find_dominated_op(int s, int e, bool *success) {
 	for(i = s; i <= e; i ++) {
 		switch(tokens[i].type) {
 			case REG: case NUM: break;
-
+			case MARK: break;
 			case '(': 
 				bracket_level ++; 
 				break;
@@ -171,7 +171,7 @@ static int find_dominated_op(int s, int e, bool *success) {
 }
 
 uint32_t get_reg_val(const char*, bool *);
-
+uint32_t getAddressFromMark(char *mark, bool *success);
 static uint32_t eval(int s, int e, bool *success) {
 	if(s > e) {
 		// bad expression
@@ -187,7 +187,9 @@ static uint32_t eval(int s, int e, bool *success) {
 					  break;
 
 			case NUM: val = strtol(tokens[s].str, NULL, 0); break;
-
+			case MARK: val = getAddressFromMark(tokens[s].str, success);
+					  if(!*success) { return 0; }
+					  break;
 			default: assert(0);
 		}
 

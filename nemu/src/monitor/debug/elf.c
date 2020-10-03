@@ -8,6 +8,29 @@ static char *strtab = NULL;
 static Elf32_Sym *symtab = NULL;
 static int nr_symtab_entry;
 
+uint32_t getAddressFromMark(char *mark, bool *success) {
+	*success = true;
+	int i;
+	for(i = 0; i < nr_symtab_entry; i++) {
+		if ((symtab[i].st_info & 0xf) == STT_OBJECT) {
+			char markName[30];	
+			strcpy(markName, strtab + symtab[i].st_name);
+			if (strcmp(markName, mark) == 0) return symtab[i].st_value;//found
+		}
+	}
+	*success = false;
+	return 0;
+}
+void getFunctionFromAddress(swaddr_t addr, char *s) {
+	int i = 0;
+	for (i = 0; i < nr_symtab_entry; i++) {
+		if (symtab[i].st_value <= addr && symtab[i].st_value +  symtab[i].st_size >= addr && (symtab[i].st_info & 0xf) == STT_FUNC) {
+			strcpy(s, strtab + symtab[i].st_name);
+			return;
+		}
+	}
+	s[0] = '\0';
+}
 void load_elf_tables(int argc, char *argv[]) {
 	int ret;
 	Assert(argc == 2, "run NEMU with format 'nemu [program]'");
