@@ -30,6 +30,7 @@ static struct rule {
 	{"[0-9]{1,10}", NUM},					// dec
 	{"\\$[a-z]{1,31}", REG},				// register names 
 	{"[a-zA-Z][A-Za-z0-9_]*", MARK},		//mark
+	//{"\\b[a-zA-Z_0-9]+" , MARK , 0},		// mark
 	{"-", '-'},
 	{"\\*", '*'},
 	{"/", '/'},
