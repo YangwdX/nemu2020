@@ -21,6 +21,7 @@ uint32_t getAddressFromMark(char *mark, bool *success) {
 	*success = false;
 	return 0;
 }
+
 void getFunctionFromAddress(swaddr_t addr, char *s) {
 	int i = 0;
 	for (i = 0; i < nr_symtab_entry; i++) {
@@ -31,6 +32,7 @@ void getFunctionFromAddress(swaddr_t addr, char *s) {
 	}
 	s[0] = '\0';
 }
+
 void load_elf_tables(int argc, char *argv[]) {
 	int ret;
 	Assert(argc == 2, "run NEMU with format 'nemu [program]'");
