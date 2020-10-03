@@ -129,6 +129,29 @@ static int cmd_q(char *args) {
 	return -1;
 }
 
+void getFunctionFromAddress(swaddr_t addr, char *s);
+
+static int cmd_bt(char *args) {
+	swaddr_t now_ebp = reg_l(R_EBP);
+	swaddr_t now_ret = cpu.eip;
+	int cnt = 0, i;
+	char name[50];
+	while(now_ebp) {
+		getFunctionFromAddress(now_ret, name);
+		if(name[0] == '\0') break;
+		printf("#%d 0x%x: ", ++cnt, now_ret);
+		printf("%s (", name);
+		for(i = 0; i < 4; i++) {
+			printf("%d", swaddr_read(now_ebp + 8 + i * 4, 4));
+			printf("%c", i == 3 ? ')' : ',');
+		}
+		now_ret = swaddr_read(now_ebp + 4, 4);
+		now_ebp = swaddr_read(now_ebp, 4);
+		printf("\n");
+	}
+	return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -146,8 +169,8 @@ static struct {
 	{ "x", "Examine memory", cmd_x },
         { "p", "Evaluate the value of expression", cmd_p },
 	{ "w", "Set watchpoint", cmd_w },
-	{ "d", "Delete watchpoint", cmd_d }
-
+	{ "d", "Delete watchpoint", cmd_d },
+	{ "bt", "Print backtrace", cmd_bt }
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
