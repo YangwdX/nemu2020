@@ -99,7 +99,7 @@ static bool make_token(char *e) {
 					//default: panic("please implement me");
                                         case REG: sprintf(tokens[nr_token].str, "%.*s", substr_len, substr_start);
 					case MARK: sprintf(tokens[nr_token].str, "%.*s", substr_len, substr_start);     
-                        /*strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
+                                        /*strncpy(tokens[nr_token].str, e + position - substr_len, substr_len);
 						   tokens[nr_token].str[substr_len] = '\0';*/	
 					default: tokens[nr_token].type = rules[i].token_type;
 							 nr_token ++;
