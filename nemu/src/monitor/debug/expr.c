@@ -189,7 +189,7 @@ static uint32_t eval(int s, int e, bool *success) {
 
 			case NUM: val = strtol(tokens[s].str, NULL, 0); break;
 			case MARK: val = getAddressFromMark(tokens[s].str, success);
-					  if(!*success) { return 0; }
+					  if(!*success) { printf("get false!"); return 0; }
 					  break;
 			default: assert(0);
 		}
