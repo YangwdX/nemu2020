@@ -26,7 +26,31 @@ static void modify_vfprintf() {
 	 * is the code section in _vfprintf_internal() relative to the
 	 * hijack.
 	 */
+	int addr = &_vfprintf_internal;	//begin
+	
+	//mprotect((void *)((addr + 0x306 - 0x64) & 0xfffff000), 4096 * 2, PROT_READ | PROT_WRITE | PROT_EXEC);
+	
+	/*char *sub = (char *)(addr + 0x306 - 0xb);
+	*sub = 0x8;
+	sub = (char *)(addr + 0x306 - 0xa);
+	*sub = 0xff;	//guess what?
+	sub = (char *)(addr + 0x306 - 0x9);
+	*sub = 0x32;	//guess what?
+	sub = (char *)(addr + 0x306 - 0x8);
+	*sub = 0x90;	//guess what?
 
+	sub = (char *)(addr + 0x306 - 30);
+	*sub = 0x90;
+	sub = (char *)(addr + 0x306 - 29);
+	*sub = 0x90;
+	sub = (char *)(addr + 0x306 - 33);
+	*sub = 0x90;
+	sub = (char *)(addr + 0x306 - 34);
+	*sub = 0x90; */
+
+	int *pos = (int *)(addr + 0x307);
+
+	*pos += (int)format_FLOAT - (int)(&_fpmaxtostr);
 #if 0
 	else if (ppfs->conv_num <= CONV_A) {  /* floating point */
 		ssize_t nf;
