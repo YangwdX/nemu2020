@@ -2,7 +2,7 @@
 
 int add(int a, int b) {
 	int c = a + b;
-	
+	set_bp();
 	return c;
 }
 
@@ -20,7 +20,7 @@ int main() {
 			loop ++;
 		}
 	}
-	set_bp();
+	
 	nemu_assert(loop == NR_DATA * NR_DATA);
 
 	return 0;
