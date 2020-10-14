@@ -1,4 +1,5 @@
 #include "nemu.h"
+#include "memory.h"
 
 #define ENTRY_START 0x100000
 
@@ -10,6 +11,7 @@ void load_elf_tables(int, char *[]);
 void init_regex();
 void init_wp_pool();
 void init_ddr3();
+void init_cache();
 
 FILE *log_fp = NULL;
 
@@ -79,6 +81,7 @@ void restart() {
 #ifdef USE_RAMDISK
 	/* Read the file with name `argv[1]' into ramdisk. */
 	init_ramdisk();
+	init_cache();
 #endif
 
 	/* Read the entry code into memory. */
@@ -88,6 +91,8 @@ void restart() {
 	cpu.eip = ENTRY_START;
         cpu.eflags.val = 0x2;
 
+	/*Initialize Cache*/
+	init_cache();
 	/* Initialize DRAM. */
 	init_ddr3();
 }
