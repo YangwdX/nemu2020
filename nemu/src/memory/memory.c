@@ -9,12 +9,145 @@
 #define SIXTEEN_WAY 16
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
-
+extern void ddr3_read(hwaddr_t, void*);
+extern void ddr3_write(hwaddr_t, void*,uint8_t*);
+lnaddr_t seg_translate(swaddr_t, size_t, uint8_t);
+hwaddr_t page_translate(lnaddr_t);
+int is_mmio(hwaddr_t);
+uint32_t mmio_read(hwaddr_t, size_t, int);
+void mmio_write(hwaddr_t, size_t, uint32_t, int);
 CPU_state cpu;
+/*extern uint8_t current_sreg;
+SEG_descriptor *seg_des;*/
 /* Memory accessing interfaces */
 
+struct Cache
+{
+	bool valid;
+	int tag;
+	uint8_t data[BLOCK_SIZE];
+}cache[STORAGE_SIZE_L1/BLOCK_SIZE];
+struct SecondaryCache
+{
+	bool valid,dirty;
+	int tag;
+	uint8_t data[BLOCK_SIZE];
+}cache2[STORAGE_SIZE_L2/BLOCK_SIZE];
+
+void init_cache()
+{
+	int i;
+	for (i = 0;i < STORAGE_SIZE_L1/BLOCK_SIZE;i ++)
+	{
+		cache[i].valid = false;
+		cache[i].tag = 0;
+		memset (cache[i].data,0,BLOCK_SIZE);
+	}
+	for (i = 0;i < STORAGE_SIZE_L2/BLOCK_SIZE;i ++)
+	{
+		cache2[i].valid = false;
+		cache2[i].dirty = false;
+		cache2[i].tag = 0;
+		memset (cache2[i].data,0,BLOCK_SIZE);
+	}
+}
+uint32_t secondarycache_read(hwaddr_t addr) 
+{
+	uint32_t g = (addr >> 6) & ((1<<12) - 1); //group number
+	uint32_t block = (addr >> 6)<<6;
+	int i;
+	bool v = false;
+	for (i = g * SIXTEEN_WAY ; i < (g + 1) * SIXTEEN_WAY ;i ++)
+	{
+		if (cache2[i].tag == (addr >> 18)&& cache2[i].valid)
+			{
+				v = true;
+				break;
+			}
+	}
+	if (!v)
+	{
+		int j;
+		for (i = g * SIXTEEN_WAY ; i < (g + 1) * SIXTEEN_WAY ;i ++)
+		{
+			if (!cache2[i].valid)break;
+		}
+		if (i == (g + 1) * SIXTEEN_WAY)//ramdom
+		{
+			srand (0);
+			i = g * SIXTEEN_WAY + rand() % SIXTEEN_WAY;
+			if (cache2[i].dirty)
+			{
+				uint8_t mask[BURST_LEN * 2];
+				memset(mask, 1, BURST_LEN * 2);
+				for (j = 0;j < BLOCK_SIZE/BURST_LEN;j ++)
+				ddr3_write(block + j * BURST_LEN, cache2[i].data + j * BURST_LEN, mask);
+			}
+		}
+		cache2[i].valid = true;
+		cache2[i].tag = addr >> 18;
+		cache2[i].dirty = false;
+		for (j = 0;j < BURST_LEN;j ++)
+		ddr3_read(block + j * BURST_LEN , cache2[i].data + j * BURST_LEN);
+	}
+	return i;
+}
+uint32_t cache_read(hwaddr_t addr) 
+{
+	uint32_t g = (addr>>6) & 0x7f; //group number
+	//uint32_t block = (addr >> 6)<<6;
+	int i;
+	bool v = false;
+	for (i = g * EIGHT_WAY ; i < (g + 1) * EIGHT_WAY ;i ++)
+	{
+		if (cache[i].tag == (addr >> 13)&& cache[i].valid)
+			{
+				v = true;
+				break;
+			}
+	}
+	if (!v)
+	{
+		int j = secondarycache_read (addr);
+		for (i = g * EIGHT_WAY ; i < (g+1) * EIGHT_WAY ;i ++)
+		{
+			if (!cache[i].valid)break;
+		}
+		if (i == (g + 1) * EIGHT_WAY)//ramdom
+		{
+			srand (0);
+			i = g * EIGHT_WAY + rand() % EIGHT_WAY;
+		}
+		cache[i].valid = true;
+		cache[i].tag = addr >> 13;
+		memcpy (cache[i].data,cache2[j].data,BLOCK_SIZE);
+	}
+	return i;
+}
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-	return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
+	int index = is_mmio(addr);
+	if ( index >= 0)
+	{
+		return mmio_read(addr, len, index);
+	}
+	uint32_t offset = addr & (BLOCK_SIZE - 1); // inside addr
+	uint32_t block = cache_read(addr);
+	uint8_t temp[4];
+	memset (temp,0,sizeof (temp));
+
+	if (offset + len >= BLOCK_SIZE) 
+	{
+		uint32_t _block = cache_read(addr + len);
+		memcpy(temp,cache[block].data + offset, BLOCK_SIZE - offset);
+		memcpy(temp + BLOCK_SIZE - offset,cache[_block].data, len - (BLOCK_SIZE - offset));
+	}
+	else
+	{
+		memcpy(temp,cache[block].data + offset,len);
+	}
+	int zero = 0;
+	uint32_t tmp = unalign_rw(temp + zero, 4) & (~0u >> ((4 - len) << 3)); 
+	return tmp;
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
