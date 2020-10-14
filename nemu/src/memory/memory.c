@@ -124,6 +124,42 @@ uint32_t cache_read(hwaddr_t addr)
 	}
 	return i;
 }
+void secondarycache_write(hwaddr_t addr, size_t len,uint32_t data) {
+	uint32_t g = (addr >> 6) & ((1<<12) - 1);  //group number
+	uint32_t offset = addr & (BLOCK_SIZE - 1); // inside addr
+	int i;
+	bool v = false;
+	for (i = g * SIXTEEN_WAY ; i < (g + 1) * SIXTEEN_WAY ;i ++)
+	{
+		if (cache2[i].tag == (addr >> 13)&& cache2[i].valid)
+			{
+				v = true;
+				break;
+			}
+	}
+	if (!v)i = secondarycache_read (addr);
+	cache2[i].dirty = true;
+	memcpy (cache2[i].data + offset , &data , len);
+}
+void cache_write(hwaddr_t addr, size_t len,uint32_t data) {
+	uint32_t g = (addr>>6) & 0x7f; //group number
+	uint32_t offset = addr & (BLOCK_SIZE - 1); // inside addr
+	int i;
+	bool v = false;
+	for (i = g * EIGHT_WAY ; i < (g + 1) * EIGHT_WAY ;i ++)
+	{
+		if (cache[i].tag == (addr >> 13)&& cache[i].valid)
+			{
+				v = true;
+				break;
+			}
+	}
+	if (v)
+	{
+		memcpy (cache[i].data + offset , &data , len);
+	}
+	secondarycache_write(addr,len,data);
+}
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	int index = is_mmio(addr);
 	if ( index >= 0)
@@ -150,10 +186,18 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	return tmp;
 }
 
-void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
+/*void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	dram_write(addr, len, data);
+}*/
+void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
+	int index = is_mmio(addr);
+	if ( index >= 0)
+	{
+		mmio_write(addr, len, data, index);
+		return ;
+	}
+	cache_write(addr, len, data);
 }
-
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	return hwaddr_read(addr, len);
 }
