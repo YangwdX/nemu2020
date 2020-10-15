@@ -4,7 +4,7 @@
 #include "cpu/reg.h"
 #include "memory/memory.h"
 #define BLOCK_SIZE 64
-#define STORAGE_SIZE_L1 256*1024
+#define STORAGE_SIZE_L1 64*1024
 #define STORAGE_SIZE_L2 4*1024*1024
 #define EIGHT_WAY 8
 #define SIXTEEN_WAY 16
@@ -167,6 +167,10 @@ void cache_write(hwaddr_t addr, size_t len,uint32_t data) {
 	secondarycache_write(addr,len,data);
 }
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
+	return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
+}
+
+/*uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	int index = is_mmio(addr);
 	if ( index >= 0)
 	{
@@ -190,12 +194,12 @@ uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
 	int zero = 0;
 	uint32_t tmp = unalign_rw(temp + zero, 4) & (~0u >> ((4 - len) << 3)); 
 	return tmp;
-}
-
-/*void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-	dram_write(addr, len, data);
 }*/
+
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
+	dram_write(addr, len, data);
+}
+/*void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	int index = is_mmio(addr);
 	if ( index >= 0)
 	{
@@ -203,7 +207,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 		return ;
 	}
 	cache_write(addr, len, data);
-}
+}*/
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 	return hwaddr_read(addr, len);
 }
