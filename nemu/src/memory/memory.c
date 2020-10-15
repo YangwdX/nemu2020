@@ -72,7 +72,7 @@ uint32_t secondarycache_read(hwaddr_t addr)
 	if (!v)
 	{
 		int j;
-		time_count += 200;
+		//time_count += 200;
 		for (i = g * SIXTEEN_WAY ; i < (g + 1) * SIXTEEN_WAY ;i ++)
 		{
 			if (!cache2[i].valid)break;
