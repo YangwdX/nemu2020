@@ -4,7 +4,7 @@
 #include "cpu/reg.h"
 #include "memory/memory.h"
 #define BLOCK_SIZE 64
-#define STORAGE_SIZE_L1 64*1024
+#define STORAGE_SIZE_L1 256*1024
 #define STORAGE_SIZE_L2 4*1024*1024
 #define EIGHT_WAY 8
 #define SIXTEEN_WAY 16
