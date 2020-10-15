@@ -6,8 +6,7 @@
 #define HW_MEM_SIZE (128 * 1024 * 1024)
 
 extern uint8_t *hw_mem;
-extern void ddr3_read(hwaddr_t, void*);
-extern void ddr3_write(hwaddr_t, void*,uint8_t*);
+
 /* convert the hardware address in the test program to virtual address in NEMU */
 #define hwa_to_va(p) ((void *)(hw_mem + (unsigned)p))
 /* convert the virtual address in NEMU to hardware address in the test program */
