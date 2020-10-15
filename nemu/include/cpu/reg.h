@@ -2,7 +2,7 @@
 #define __REG_H__
 
 #include "common.h"
-
+#include "../../../lib-common/x86-inc/cpu.h"
 enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };
 enum { R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI };
 enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
@@ -13,6 +13,26 @@ enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
  * cpu.gpr[1]._8[1], we will get the 'ch' register. Hint: Use `union'.
  * For more details about the register encoding scheme, see i386 manual.
  */
+
+struct SREG{
+		uint16_t selector;
+		union {
+			struct {
+				uint32_t seg_base1 :16;
+				uint32_t seg_base2 :8;
+				uint32_t seg_base3 :8;
+			};
+			uint32_t seg_base;
+		};
+		union {
+			struct {
+				uint32_t seg_limit1 :16;
+				uint32_t seg_limit2 :4;
+				uint32_t seg_limit3 :12;
+			};
+			uint32_t seg_limit;
+		};
+};
 
 typedef struct {
      union{
@@ -52,6 +72,18 @@ typedef struct {
 		};
 		uint32_t val;
 	} eflags;
+	struct GDTR{
+		uint32_t base_addr;
+		uint16_t seg_limit;
+	}gdtr;
+	CR0 cr0;
+	union {
+        	struct SREG sr[6];
+        	struct {
+            		struct SREG es, cs, ss, ds, fs, gs;
+        	};
+	};
+
 
 } CPU_state;
 
