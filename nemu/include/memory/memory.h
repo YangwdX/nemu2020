@@ -16,7 +16,7 @@ extern uint8_t *hw_mem;
 	Assert(addr < HW_MEM_SIZE, "physical address(0x%08x) is out of bound", addr); \
 	hwa_to_va(addr); \
 })
-uint64_t time_count;
+//uint64_t time_count;
 uint32_t swaddr_read(swaddr_t, size_t);
 uint32_t lnaddr_read(lnaddr_t, size_t);
 uint32_t hwaddr_read(hwaddr_t, size_t);

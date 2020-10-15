@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "burst.h"
 #include "cpu/reg.h"
-#include "memory/memory.h"
+//#include "memory/memory.h"
 #define BLOCK_SIZE 64
 #define STORAGE_SIZE_L1 64*1024
 #define STORAGE_SIZE_L2 4*1024*1024
@@ -39,7 +39,7 @@ struct SecondaryCache
 void init_cache()
 {
 	int i;
-	time_count = 0;
+	//time_count = 0;
 	for (i = 0;i < STORAGE_SIZE_L1/BLOCK_SIZE;i ++)
 	{
 		cache[i].valid = false;
@@ -65,7 +65,7 @@ uint32_t secondarycache_read(hwaddr_t addr)
 		if (cache2[i].tag == (addr >> 18)&& cache2[i].valid)
 			{
 				v = true;
-				time_count += 20;
+				//time_count += 20;
 				break;
 			}
 	}
@@ -108,7 +108,7 @@ uint32_t cache_read(hwaddr_t addr)
 		if (cache[i].tag == (addr >> 13)&& cache[i].valid)
 			{
 				v = true;
-				time_count += 2;
+				//time_count += 2;
 				break;
 			}
 	}

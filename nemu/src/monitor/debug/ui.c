@@ -2,7 +2,7 @@
 #include "monitor/expr.h"
 #include "monitor/watchpoint.h"
 #include "nemu.h"
-#include "memory.h"
+//#include "memory.h"
 
 #include <stdlib.h>
 #include <readline/readline.h>
@@ -89,10 +89,10 @@ static int cmd_x(char *args) {
 }
 
 /* Add expression evaluation  */
-static int cmd_pt(char *args) {
+/*static int cmd_pt(char *args) {
 	printf("%ld\n",time_count);
 	return 0;
-}
+}*/
 static int cmd_p(char *args) {
 	bool success;
 
@@ -179,8 +179,8 @@ static struct {
         { "p", "Evaluate the value of expression", cmd_p },
 	{ "w", "Set watchpoint", cmd_w },
 	{ "d", "Delete watchpoint", cmd_d },
-	{ "bt", "Display backtrace", cmd_bt },
-	{ "pt", "Print time_count",cmd_pt}
+	{ "bt", "Display backtrace", cmd_bt }
+	//{ "pt", "Print time_count",cmd_pt}
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
