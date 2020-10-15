@@ -17,6 +17,7 @@ int is_mmio(hwaddr_t);
 uint32_t mmio_read(hwaddr_t, size_t, int);
 void mmio_write(hwaddr_t, size_t, uint32_t, int);
 CPU_state cpu;
+uint64_t time_count;
 /*extern uint8_t current_sreg;
 SEG_descriptor *seg_des;*/
 /* Memory accessing interfaces */
@@ -37,6 +38,7 @@ struct SecondaryCache
 void init_cache()
 {
 	int i;
+	time_count = 0;
 	for (i = 0;i < STORAGE_SIZE_L1/BLOCK_SIZE;i ++)
 	{
 		cache[i].valid = false;
