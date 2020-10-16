@@ -6,6 +6,7 @@
 enum { R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI };
 enum { R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI };
 enum { R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH };
+enum { R_ES, R_CS, R_SS, R_DS, R_FS, R_GS };
 
 /* TODO: Re-organize the `CPU_state' structure to match the register
  * encoding scheme in i386 instruction format. For example, if we
@@ -97,9 +98,11 @@ static inline int check_reg_index(int index) {
 #define reg_l(index) (cpu.gpr[check_reg_index(index)]._32)
 #define reg_w(index) (cpu.gpr[check_reg_index(index)]._16)
 #define reg_b(index) (cpu.gpr[check_reg_index(index) & 0x3]._8[index >> 2])
+#define reg_s(index) (cpu.sr[check_sreg_index(index)])
 
 extern const char* regsl[];
 extern const char* regsw[];
 extern const char* regsb[];
+extern const char* regss[];
 
 #endif
