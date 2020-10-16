@@ -14,7 +14,7 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 void ddr3_read(hwaddr_t, void*);
 void ddr3_write(hwaddr_t, void*,uint8_t*);
 lnaddr_t seg_translate(swaddr_t, size_t, uint8_t);
-hwaddr_t page_translate(lnaddr_t);
+
 int is_mmio(hwaddr_t);
 uint32_t mmio_read(hwaddr_t, size_t, int);
 void mmio_write(hwaddr_t, size_t, uint32_t, int);
@@ -209,12 +209,38 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 	}
 	cache_write(addr, len, data);
 }
+
+hwaddr_t page_translate(lnaddr_t addr, size_t len) {
+	if(cpu.cr0.protect_enable && cpu.cr0.paging) {
+		//hwaddr_t tmpad;
+		//if((tmpad = readTLB(addr & 0xfffff000)) != -1) return (tmpad << 12) + (addr & 0xfff);
+		PageEntry dir, page;
+		uint32_t dir_offset = addr >> 22;
+		uint32_t page_offset = ((addr >> 12) & 0x3ff);
+		uint32_t offset = addr & 0xfff;
+		dir.val = hwaddr_read((cpu.cr3.page_directory_base << 12) + (dir_offset << 2), 4);
+		Assert(dir.p, "Invalid page.");
+		page.val = hwaddr_read((dir.base << 12) + (page_offset << 2), 4);
+		Assert(page.p, "Invalid page.");
+	//	hwaddr_t hwaddr = (page.base << 12) + offset;
+		//Assert((hwaddr & 0xfff) + len == ((hwaddr + len) & 0xfff), "Fatal Error!!");
+		//writeTLB(addr & 0xfffff000, page.base);
+		return (page.base << 12) + offset;
+	} else {
+		return addr;
+	}
+}
+
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-	return hwaddr_read(addr, len);
+	assert(len == 1 || len == 2 || len == 4);
+	hwaddr_t hwaddr = page_translate(addr, len); 
+	return hwaddr_read(hwaddr, len);
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-	hwaddr_write(addr, len, data);
+	assert(len == 1 || len == 2 || len == 4);
+	hwaddr_t hwaddr = page_translate(addr, len); 
+	hwaddr_write(hwaddr, len, data);
 }
 
 void loadSregCache(uint8_t sreg) {
