@@ -95,6 +95,9 @@ void restart() {
 	/* Set the initial instruction pointer. */
 	cpu.eip = ENTRY_START;
         cpu.eflags.val = 0x2;
+	
+	cpu.cs.cache.base = 0;
+	cpu.cs.cache.limit = 0xffffffff;
 	/*Initialize CR0*/
 	init_cr0();
 	/*Initialize Cache*/

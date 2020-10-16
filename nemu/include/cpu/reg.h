@@ -15,25 +15,45 @@ enum { R_ES, R_CS, R_SS, R_DS, R_FS, R_GS };
  * For more details about the register encoding scheme, see i386 manual.
  */
 
-struct SREG{
-		uint16_t selector;
-		union {
-			struct {
-				uint32_t seg_base1 :16;
-				uint32_t seg_base2 :8;
-				uint32_t seg_base3 :8;
-			};
-			uint32_t seg_base;
+typedef struct {
+	union {
+		struct {
+			uint8_t RPL : 2;
+			uint8_t TL : 1;
+			uint16_t index : 13;
 		};
-		union {
-			struct {
-				uint32_t seg_limit1 :16;
-				uint32_t seg_limit2 :4;
-				uint32_t seg_limit3 :12;
-			};
-			uint32_t seg_limit;
+		uint16_t val;
+	};
+	struct {//cache
+		uint32_t base;
+		uint32_t limit;
+	} cache;
+} SREG;//16 bits + 32 bits(cache)
+
+typedef struct {
+	union {
+		struct {
+			uint16_t limit1;
+			uint16_t base1;
 		};
-};
+		uint32_t first;
+	};
+	union {
+		struct {
+			uint32_t base2 	: 8;
+			uint32_t type : 5;
+			uint32_t dpl : 2;
+			uint32_t p :1 ;
+			uint32_t limit2	: 4;
+			uint32_t avl : 1;
+			uint32_t : 1;
+			uint32_t b : 1;
+			uint32_t g : 1;
+			uint32_t base3 : 8;
+		};
+		uint32_t second;
+	};	
+} SegmentDescriptor;
 
 typedef struct {
      union{
@@ -79,9 +99,9 @@ typedef struct {
 	}gdtr;
 	CR0 cr0;
 	union {
-        	struct SREG sr[6];
+        	SREG sr[6];
         	struct {
-            		struct SREG es, cs, ss, ds, fs, gs;
+            		SREG es, cs, ss, ds, fs, gs;
         	};
 	};
 

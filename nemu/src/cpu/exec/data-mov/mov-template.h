@@ -69,5 +69,25 @@ make_helper(mov_r2cr) {
 	}
 	return 2;
 }
+#endif
+ 
+#if DATA_BYTE == 2
+make_helper(mov_seg) {
+	uint8_t opcode = instr_fetch(eip + 1, 1);
+	if(opcode == 0xd8) {
+		cpu.ds.val = reg_w(R_EAX);
+		loadSregCache(R_DS);
+		print_asm("mov %%%s,ds",REG_NAME(R_EAX));
+	} else if(opcode == 0xc0) {
+		cpu.es.val = reg_w(R_EAX);
+		loadSregCache(R_ES);
+		print_asm("mov %%%s,es",REG_NAME(R_EAX));
+	} else if(opcode == 0xd0) {
+		cpu.ss.val = reg_w(R_EAX);
+		loadSregCache(R_SS);
+		print_asm("mov %%%s,ss",REG_NAME(R_EAX));
+	}
+	return 2;
+}
 #endif 
 #include "cpu/exec/template-end.h"

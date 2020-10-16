@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "burst.h"
 #include "cpu/reg.h"
+#include "../../../lib-common/x86-inc/cpu.h"
 //#include "memory/memory.h"
 #define BLOCK_SIZE 64
 #define STORAGE_SIZE_L1 64*1024
@@ -214,6 +215,19 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 	hwaddr_write(addr, len, data);
+}
+
+void loadSregCache(uint8_t sreg) {
+	uint32_t gdt = cpu.gdtr.base_addr;//base
+	gdt += cpu.sr[sreg].index << 3;//offset
+	SegmentDescriptor sdp;
+	sdp.first = lnaddr_read(gdt, 4);
+	sdp.second = lnaddr_read(gdt + 4, 4);
+	uint32_t base = (((uint32_t)sdp.base2) << 16) | sdp.base1 | (((uint32_t)sdp.base3) << 24);
+	uint32_t limit = (((uint32_t)sdp.limit2) << 16) | sdp.limit1;
+	if(sdp.g) limit <<= 12;
+	cpu.sr[sreg].cache.limit = limit;
+	cpu.sr[sreg].cache.base = base;
 }
 
 uint32_t swaddr_read(swaddr_t addr, size_t len, uint8_t sreg) {
