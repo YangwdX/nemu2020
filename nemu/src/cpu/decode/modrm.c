@@ -119,6 +119,7 @@ int read_ModR_M(swaddr_t eip, Operand *rm, Operand *reg) {
 			rm->sreg = R_DS;
 		}
 		//rm->val = swaddr_read(rm->addr, rm->size);
+		rm->val = swaddr_read(rm->addr, rm->size, rm->sreg);
 		return instr_len;
 	}
 }
