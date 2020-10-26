@@ -93,6 +93,8 @@ void restart() {
 
 	/* Set the initial instruction pointer. */
 	cpu.eip = ENTRY_START;
+	cpu.eflags.CF = 1;
+	cpu.eflags.PF = cpu.eflags.ZF = cpu.eflags.SF = cpu.eflags.IF = cpu.eflags.DF = cpu.eflags.OF = 0;
         cpu.eflags.val = 0x2;
 
 	/* Initialize DRAM. */
