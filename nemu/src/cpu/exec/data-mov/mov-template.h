@@ -73,7 +73,7 @@ make_helper(mov_seg) {
 		sreg_load(R_SS);
 		print_asm("mov %%%s,ss",REG_NAME(R_EAX));
 	}
-	return 5; //2
+	return 2; //2
 }
 #endif 
 
