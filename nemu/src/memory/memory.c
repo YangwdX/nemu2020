@@ -10,6 +10,7 @@ lnaddr_t seg_translate(swaddr_t, size_t, uint8_t);
 void sreg_load(uint8_t);
 hwaddr_t page_translate(lnaddr_t, size_t); 
 
+
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
