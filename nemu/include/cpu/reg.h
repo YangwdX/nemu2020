@@ -69,6 +69,23 @@ typedef struct {
 } SegDescriptor;
 
 typedef struct {
+	union {
+		struct {
+			uint32_t p 	:1;
+			uint32_t rw	:1;
+			uint32_t us	:1;
+			uint32_t 	:2;
+			uint32_t a	:1;
+			uint32_t d 	:1;
+			uint32_t 	:2;
+			uint32_t avail	:3;
+			uint32_t addr 	:20;
+		};
+		uint32_t page_val;
+	};
+}PageDescriptor;
+
+typedef struct {
      union{
         union {
 		uint32_t _32;

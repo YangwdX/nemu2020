@@ -8,7 +8,7 @@ uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
 lnaddr_t seg_translate(swaddr_t, size_t, uint8_t);
 void sreg_load(uint8_t);
-
+hwaddr_t page_translate(lnaddr_t, size_t); 
 
 /* Memory accessing interfaces */
 
@@ -90,7 +90,7 @@ void sreg_load(uint8_t sreg) {
 
 hwaddr_t page_translate(lnaddr_t addr, size_t len) {
 	if(cpu.cr0.protect_enable && cpu.cr0.paging) {
-		hwaddr_t tmp_addr;
+		//hwaddr_t tmp_addr;
 		/*if((tmp_addr = tlb_read(addr & 0xfffff000)) != -1) return (tmp_addr << 12) + (addr & 0xfff);*/
 		PageDescriptor dir, page;
 		uint32_t dir_in_addr = addr >> 22;
