@@ -43,7 +43,7 @@ uint32_t loader() {
 	for(; i < elf->e_phnum; i++, ph++) {
 		/* Scan the program header table, load each segment into memory */
 		if(ph->p_type == PT_LOAD) {
-			set_bp();
+			//set_bp();
                         //uint32_t pa = ph->p_vaddr;
 			ph->p_vaddr = mm_malloc(ph->p_vaddr, ph->p_memsz);
 			/* TODO: read the content of the segment from the ELF file 
@@ -61,6 +61,8 @@ uint32_t loader() {
 			extern uint32_t cur_brk, max_brk;
 			uint32_t new_brk = ph->p_vaddr + ph->p_memsz - 1;
 			if(cur_brk < new_brk) { max_brk = cur_brk = new_brk; }
+
+			set_bp();
 #endif
 		}
 	}
