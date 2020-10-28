@@ -77,9 +77,9 @@ void init_cond() {
 	/* Write some test data to the video memory. */
 	//video_mapping_write_test();
 #endif
-set_bp();
+
 video_mapping_write_test();
-set_bp();
+
 	/* Load the program. */
 	uint32_t eip = loader();
 	
@@ -92,8 +92,9 @@ set_bp();
 	/* Clear the test data we just written in the video memory. */
 	//video_mapping_clear();
 #endif
-
+set_bp();
 video_mapping_read_test();
+set_bp();
 video_mapping_clear();
 
 #ifdef IA32_PAGE
