@@ -78,6 +78,8 @@ uint32_t loader() {
 
 	write_cr3(get_ucr3());
 #endif
-
+	void video_mapping_write_test();
+	void video_mapping_read_test();
+	void video_mapping_clear();
 	return entry;
 }
