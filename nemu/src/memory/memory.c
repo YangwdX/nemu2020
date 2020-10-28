@@ -2,6 +2,7 @@
 #include "stdlib.h"
 #include "burst.h"
 #include "memory/cache.h"
+#include "memory/tlb.h"
 #include "cpu/reg.h"
 
 uint32_t dram_read(hwaddr_t, size_t);
@@ -91,8 +92,8 @@ void sreg_load(uint8_t sreg) {
 
 hwaddr_t page_translate(lnaddr_t addr, size_t len) {
 	if(cpu.cr0.protect_enable && cpu.cr0.paging) {
-		//hwaddr_t tmp_addr;
-		/*if((tmp_addr = tlb_read(addr & 0xfffff000)) != -1) return (tmp_addr << 12) + (addr & 0xfff);*/
+		hwaddr_t tmp_addr;
+		if((tmp_addr = tlb_read(addr & 0xfffff000)) != -1) return (tmp_addr << 12) + (addr & 0xfff);
 		PageDescriptor dir, page;
 		uint32_t dir_in_addr = addr >> 22;
 		uint32_t page_in_addr = ((addr >> 12) & 0x3ff);
@@ -101,7 +102,7 @@ hwaddr_t page_translate(lnaddr_t addr, size_t len) {
 		Assert(dir.p, "Invalid page!"); //avoid error
 		page.page_val = hwaddr_read((dir.addr << 12) + (page_in_addr << 2), 4);
 		Assert(page.p, "Invalid page!"); //avoid error
-		//tlb_write(addr & 0xfffff000, page.addr);
+		tlb_write(addr & 0xfffff000, page.addr);
 		return (page.addr << 12) + in_addr;
 	} else {
 		return addr;
