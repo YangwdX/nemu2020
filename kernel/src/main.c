@@ -75,9 +75,11 @@ void init_cond() {
 
 #if defined(IA32_PAGE) && defined(HAS_DEVICE)
 	/* Write some test data to the video memory. */
-	video_mapping_write_test();
+	//video_mapping_write_test();
 #endif
+set_bp();
 video_mapping_write_test();
+
 	/* Load the program. */
 	uint32_t eip = loader();
 	
@@ -85,13 +87,15 @@ video_mapping_write_test();
 	/* Read data in the video memory to check whether 
 	 * the test data is written sucessfully.
 	 */
-	video_mapping_read_test();
+	//video_mapping_read_test();
 
 	/* Clear the test data we just written in the video memory. */
-	video_mapping_clear();
+	//video_mapping_clear();
 #endif
+
 video_mapping_read_test();
 video_mapping_clear();
+
 #ifdef IA32_PAGE
 	/* Set the %esp for user program, which is one of the
 	 * convention of the "advanced" runtime environment. */
