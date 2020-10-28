@@ -45,7 +45,7 @@ uint32_t loader() {
 		if(ph->p_type == PT_LOAD) {
 			//set_bp();
                         //uint32_t pa = ph->p_vaddr;
-			ph->p_vaddr = mm_malloc(ph->p_vaddr, ph->p_memsz);set_bp();
+			ph->p_vaddr = mm_malloc(ph->p_vaddr, ph->p_memsz);
 			/* TODO: read the content of the segment from the ELF file 
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
