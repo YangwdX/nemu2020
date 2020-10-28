@@ -78,7 +78,7 @@ void init_cond() {
 	//video_mapping_write_test();
 #endif
 
-video_mapping_write_test();
+
 
 	/* Load the program. */
 	uint32_t eip = loader();
@@ -93,6 +93,7 @@ video_mapping_write_test();
 	//video_mapping_clear();
 #endif
 set_bp();
+video_mapping_write_test();
 video_mapping_read_test();
 set_bp();
 video_mapping_clear();
